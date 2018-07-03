@@ -5,7 +5,12 @@ const Boom = require('boom')
 const ActivityModel = require('./model/activity-model')
 
 const server = Hapi.server({
-    port: process.env.PORT || 4000
+    port: process.env.PORT || 4000,
+    routes: {
+        cors: {
+            origin: ['*']
+        }
+    }
 })
 
 const doorCommandPostHandler = function (request, h) {
@@ -61,7 +66,9 @@ server.route({
     method: 'GET',
     path: '/test',
     handler: (request, h) => {
-        const response = h.response({test : "message"})
+        const response = h.response({
+            test: "message"
+        })
         response.code(402)
         return response
     }
