@@ -57,6 +57,16 @@ server.route([{
     handler: doorCommandPostHandler
 }])
 
+server.route({
+    method: 'GET',
+    path: '/test',
+    handler: (request, h) => {
+        const response = h.response({test : "message"})
+        response.code(402)
+        return response
+    }
+})
+
 
 async function start() {
     try {
