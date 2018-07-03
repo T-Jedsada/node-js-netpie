@@ -5,30 +5,58 @@ const Boom = require('boom')
 const ActivityModel = require('./model/activity-model')
 
 const server = Hapi.server({
-    port: process.env.PORT || 8000
+    port: process.env.PORT || 4000
 })
 
 const doorCommandPostHandler = function (request, h) {
     const command = request.payload.command
     netpie.publish("/door", command, true)
+    return {
+        message: "successfully"
+    }
+}
 
+const saveActivity = (request, h) => {
     var activity = new ActivityModel()
-    activity.timestamp = "test"
-    activity.urlImage = "test"
-    activity.action = "test"
-    activity.serialNumber = "test"
-
-    console.log(JSON.stringify(activity))
-    activity.save((err) => {
-        h.reponse("test")
+    activity.timestamp = request.payload.timestamp
+    activity.urlImage = request.payload.urlImage
+    activity.action = request.payload.action
+    activity.serialNumber = request.payload.serialNumber
+    return activity.save().then(() => {
+        return {
+            message: "success create"
+        }
+    }).catch(err => {
+        Boom.badImplementation('something went wrong while saving activitie .')
     })
 }
 
-server.route({
+const getActivities = (request, h) => {
+    return ActivityModel.find({}).then(data => {
+        return data
+    }).catch(err => {
+        Boom.badImplementation('something went wrong while query activitie .')
+    })
+}
+
+server.route([{
+        method: 'GET',
+        path: '/activities',
+        handler: getActivities
+    },
+    {
+        method: 'POST',
+        path: '/activities',
+        handler: saveActivity
+    },
+])
+
+server.route([{
     method: 'POST',
     path: '/door/command',
     handler: doorCommandPostHandler
-})
+}])
+
 
 async function start() {
     try {
