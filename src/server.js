@@ -1,17 +1,26 @@
 const Hapi = require('hapi')
 const netpie = require('./netpie')
+require('./database').db
+const Boom = require('boom')
+const activityModel = require('./model/activity-model')
 
 const server = Hapi.server({
     port: process.env.PORT || 8000
 })
 
-const doorCommandPostHandler = function (request, _) {
+const doorCommandPostHandler = function (request, h) {
     const command = request.payload.command
     netpie.publish("/door", command, true)
     const reponse = {
         message: 'successfully'
     }
-    return reponse
+
+    return activityModel.find().then (function (err, activity) {
+        console.log("error: " + err)
+        return reponse
+    }).catch(e => {
+        return reponse
+    })
 }
 
 server.route({

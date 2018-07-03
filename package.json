@@ -4,13 +4,16 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-    "start" : "node src/server.js",
+    "start": "node src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "boom": "^7.2.0",
     "hapi": "^17.5.2",
-    "microgear": "^0.8.1"
+    "hapi-io": "^0.2.1",
+    "microgear": "^0.8.1",
+    "mongoose": "^5.2.0"
   }
 }
