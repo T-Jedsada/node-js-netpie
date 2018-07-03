@@ -3,7 +3,12 @@ require('./database')
 const handlers = require('./handlers')
 
 const server = Hapi.server({
-    port: process.env.PORT || 8000
+    port: process.env.PORT || 8000,
+    routes: {
+        cors: {
+            origin: ['*']
+        }
+    }
 })
 
 server.route([{
@@ -23,6 +28,18 @@ server.route([{
     path: '/door/command',
     handler:handlers.default.doorCommandPostHandler
 }])
+
+server.route({
+    method: 'GET',
+    path: '/test',
+    handler: (request, h) => {
+        const response = h.response({
+            test: "message"
+        })
+        response.code(402)
+        return response
+    }
+})
 
 
 async function start() {
