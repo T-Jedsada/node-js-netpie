@@ -26,17 +26,17 @@ server.route([{
 server.route([{
     method: 'POST',
     path: '/door/command',
-    handler:handlers.default.doorCommandPostHandler
+    handler: handlers.default.doorCommandPostHandler
 }])
 
 server.route({
     method: 'GET',
-    path: '/test',
+    path: '/',
     handler: (request, h) => {
         const response = h.response({
-            test: "message"
+            test: "fucking shit!!!"
         })
-        response.code(402)
+        response.code(404)
         return response
     }
 })
