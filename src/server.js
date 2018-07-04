@@ -1,9 +1,12 @@
 const Hapi = require('hapi')
 require('./database')
 const handlers = require('./handlers')
+const socketServer = require('./socketio')
+
 
 const server = Hapi.server({
-    port: process.env.PORT || 8000,
+    port: process.env.PORT || 4000,
+    host: 'localhost',
     routes: {
         cors: {
             origin: ['*']
@@ -44,6 +47,23 @@ server.route({
 
 async function start() {
     try {
+        await server.register(require('vision'))
+        server.views({
+            engines: {
+                html: require('handlebars')
+            },
+            relativeTo: __dirname,
+            path: './views',
+        })
+        
+        server.route({
+            method: 'GET',
+            path: '/testsocketio',
+            handler: (req, h) => {
+                return h.view('index')
+            }
+        })
+        await socketServer.listen(4001)
         await server.start()
     } catch (err) {
         console.log(err)
