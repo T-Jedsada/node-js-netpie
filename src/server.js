@@ -63,7 +63,7 @@ async function start() {
                 return h.view('index')
             }
         })
-        await socket.socketServer.listen(4001)
+        await socket.socketServer.listen(8001)
         await server.start()
     } catch (err) {
         console.log(err)
