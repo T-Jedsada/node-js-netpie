@@ -4,7 +4,7 @@ const io = require('socket.io')(socketServer)
 const netpie = require('./netpie')
 
 io.on('connection', (socket) => {
-
+    console.log('socket connected ... ')
     socket.emit('hello', {
         say: 'hello'
     })

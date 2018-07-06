@@ -1,11 +1,12 @@
 const Hapi = require('hapi')
 require('./database')
 const handlers = require('./handlers')
-const socket = require('./socketio')
+// const socket = require('./socketio')
+const netpie = require('./netpie')
 
 
 const server = Hapi.server({
-    port: process.env.PORT || 8000,
+    port: '4000',
     host: 'localhost',
     routes: {
         cors: {
@@ -13,6 +14,33 @@ const server = Hapi.server({
         }
     }
 })
+
+console.log(server.listner)
+
+const io = require('socket.io')(server.listner)
+
+io.on('connection', (socket) => {
+    console.log('socket connected ... ')
+    socket.emit('hello', {
+        say: 'hello'
+    })
+
+    socket.on("sayback", (data) => {
+        socket.emit('hello-again', {
+            say: 'WTF!!'
+        })
+    })
+
+    netpie.on('message', function (topic, body) {
+        console.log('incoming topic: ' + topic + '\tmessage: ' + body);
+        if (topic == '/ihere/door/status') {
+            // TODO : handler command
+            socket.emit('/door/activities', body)
+        }
+    });
+
+})
+
 
 server.route([{
         method: 'GET',
@@ -55,7 +83,7 @@ async function start() {
             relativeTo: __dirname,
             path: './views',
         })
-        
+
         server.route({
             method: 'GET',
             path: '/testsocketio',
@@ -63,7 +91,6 @@ async function start() {
                 return h.view('index')
             }
         })
-        await socket.socketServer.listen(8001)
         await server.start()
     } catch (err) {
         console.log(err)
