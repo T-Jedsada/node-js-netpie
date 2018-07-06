@@ -5,7 +5,7 @@ const socket = require('./socketio')
 
 
 const server = Hapi.server({
-    port: process.env.PORT || 4000,
+    port: process.env.PORT || 8000,
     host: 'localhost',
     routes: {
         cors: {
