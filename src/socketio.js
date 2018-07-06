@@ -10,9 +10,8 @@ io.on('connection', (socket) => {
     })
 
     socket.on("sayback", (data) => {
-        console.log(data)
         socket.emit('hello-again', {
-            say: 'fuck'
+            say: 'WTF!!'
         })
     })
 
@@ -26,4 +25,7 @@ io.on('connection', (socket) => {
 
 })
 
-module.exports = socketServer
+module.exports = {
+    io,
+    socketServer
+}

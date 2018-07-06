@@ -1,7 +1,7 @@
 const Hapi = require('hapi')
 require('./database')
 const handlers = require('./handlers')
-const socketServer = require('./socketio')
+const socket = require('./socketio')
 
 
 const server = Hapi.server({
@@ -63,7 +63,7 @@ async function start() {
                 return h.view('index')
             }
         })
-        await socketServer.listen(4001)
+        await socket.socketServer.listen(4001)
         await server.start()
     } catch (err) {
         console.log(err)
