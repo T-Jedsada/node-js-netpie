@@ -16,13 +16,6 @@ microgear.on('connected', function () {
     console.log('Connected...')
 })
 
-microgear.on('message', function(topic,body) {
-    console.log('incoming topic: '+topic + '\tmessage: ' + body);
-    if (topic == '/ihere/door/status') {
-        // TODO : handler command
-    }
-});
-
 microgear.on('closed', function () {
     console.log('Closed...')
 })
