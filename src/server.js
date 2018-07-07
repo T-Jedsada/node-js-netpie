@@ -7,7 +7,7 @@ const netpie = require('./netpie')
 
 const server = Hapi.server({
     port: process.env.PORT || 8000,
-    host: 'localhost',
+    host: '0.0.0.0',
     routes: {
         cors: {
             origin: ['*']
@@ -16,7 +16,7 @@ const server = Hapi.server({
 })
 
 
-const io = socketio(server.listener)
+const io = socketio.listen(server.listener)
 io.on('connection', (socket) => {
     console.log('socket connected ... ')
     socket.emit('hello', {
