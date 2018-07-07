@@ -19,7 +19,7 @@ class Handler {
             activity.urlImage = request.payload.urlImage
             activity.serialNumber = request.payload.serialNumber
             return activity.save().then(data => {
-                request.server.app.io.sockets.emit('/new/activity', data)
+                request.server.app.io.sockets.emit(`${activity.serialNumber}/new/activity`, data)
                 return {
                     message: "success create"
                 }
