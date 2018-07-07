@@ -1,7 +1,7 @@
 const Boom = require('boom')
 const ActivityModel = require('./model/activity-model')
 const netpie = require('./netpie')
-const socket = require('./socketio')
+// const {io} = require('./socketio')
 
 class Handler {
     constructor() {
@@ -19,7 +19,7 @@ class Handler {
             activity.urlImage = request.payload.urlImage
             activity.serialNumber = request.payload.serialNumber
             return activity.save().then(data => {
-                socket.io.sockets.emit('/new/activity', data)
+                request.server.app.io.sockets.emit(`${activity.serialNumber}/new/activity`, data)
                 return {
                     message: "success create"
                 }
