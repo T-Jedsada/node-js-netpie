@@ -18,14 +18,14 @@ class Handler {
             activity.timestamp = request.payload.timestamp
             activity.urlImage = request.payload.urlImage
             activity.serialNumber = request.payload.serialNumber
-            // return activity.save().then(data => {
-                request.server.app.io.sockets.emit('test', {test : "test"})
+            return activity.save().then(data => {
+                request.server.app.io.sockets.emit('/new/activity', data)
                 return {
                     message: "success create"
                 }
-            // }).catch(_ => {
-                // Boom.badImplementation('something went wrong while saving activitie .')
-            // })
+            }).catch(_ => {
+                Boom.badImplementation('something went wrong while saving activitie .')
+            })
         }
 
         this.getActivities = (request, h) => {
