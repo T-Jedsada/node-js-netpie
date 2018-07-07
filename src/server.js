@@ -1,13 +1,12 @@
 const Hapi = require('hapi')
 require('./database')
 const handlers = require('./handlers')
-// const {startSocket} = require('./socketio')
 const socketio = require('socket.io')
 const netpie = require('./netpie')
 
 
 const server = Hapi.server({
-    port: '8000',
+    port: process.env.PORT || 8000,
     host: 'localhost',
     routes: {
         cors: {
