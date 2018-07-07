@@ -1,12 +1,13 @@
 const Hapi = require('hapi')
 require('./database')
 const handlers = require('./handlers')
-// const socket = require('./socketio')
+// const {startSocket} = require('./socketio')
+const socketio = require('socket.io')
 const netpie = require('./netpie')
 
 
 const server = Hapi.server({
-    port: '4000',
+    port: '8000',
     host: 'localhost',
     routes: {
         cors: {
@@ -15,10 +16,8 @@ const server = Hapi.server({
     }
 })
 
-console.log(server.listner)
 
-const io = require('socket.io')(server.listner)
-
+const io = socketio(server.listener)
 io.on('connection', (socket) => {
     console.log('socket connected ... ')
     socket.emit('hello', {
@@ -38,9 +37,9 @@ io.on('connection', (socket) => {
             socket.emit('/door/activities', body)
         }
     });
-
 })
 
+server.app.io = io 
 
 server.route([{
         method: 'GET',
