@@ -10,7 +10,8 @@ const server = Hapi.server({
     host: '0.0.0.0',
     routes: {
         cors: {
-            origin: ['*']
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with']
         }
     }
 })
