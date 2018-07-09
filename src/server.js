@@ -8,8 +8,15 @@ const netpie = require('./netpie')
 const server = Hapi.server({
     port: process.env.PORT || 8000,
     host: '0.0.0.0',
+    // routes: {
+    //     cors: true
+    // }
     routes: {
-        cors: true
+        cors: {
+            origin: ['*'],
+            // headers: ["Accept", "Content-Type","Origin","Access-Control-Request-Method","Access-Control-Request-Headers"],
+            additionalHeaders: ['cache-control',"x-requested-with","Origin"]
+        }
     }
 })
 
@@ -38,7 +45,13 @@ io.on('connection', (socket) => {
 
 server.app.io = io 
 
-server.route([{
+server.route([
+    // {
+    //     method: 'OPTIONS',
+    //     path: '/activities',
+    //     handler: handlers.default.getActivities
+    // },
+    {
         method: 'GET',
         path: '/activities',
         handler: handlers.default.getActivities
