@@ -15,6 +15,13 @@ const server = Hapi.server({
             origin: ['*'],
             additionalHeaders: [
                 'Access-Control-Request-Headers',
+                'Access-Control-Request-Methods',
+                'cache-control', 
+                'x-requested-with',
+                'Access-Control-Allow-Methods'
+            ],
+            additionalExposedHeaders: [
+                'Access-Control-Request-Headers',
                 'Access-Control-Request-Method'
             ]
         }
@@ -22,29 +29,29 @@ const server = Hapi.server({
 })
 
 
-const io = socketio.listen(server.listener)
-io.on('connection', (socket) => {
-    console.log('socket connected ... ')
-    socket.emit('hello', {
-        say: 'hello'
-    })
+// const io = socketio.listen(server.listener)
+// io.on('connection', (socket) => {
+//     console.log('socket connected ... ')
+//     socket.emit('hello', {
+//         say: 'hello'
+//     })
 
-    socket.on("sayback", (data) => {
-        socket.emit('hello-again', {
-            say: 'WTF!!'
-        })
-    })
+//     socket.on("sayback", (data) => {
+//         socket.emit('hello-again', {
+//             say: 'WTF!!'
+//         })
+//     })
 
-    netpie.on('message', function (topic, body) {
-        console.log('incoming topic: ' + topic + '\tmessage: ' + body);
-        if (topic == '/ihere/door/status') {
-            // TODO : handler command
-            socket.emit('/door/activities', body)
-        }
-    });
-})
+//     netpie.on('message', function (topic, body) {
+//         console.log('incoming topic: ' + topic + '\tmessage: ' + body);
+//         if (topic == '/ihere/door/status') {
+//             // TODO : handler command
+//             socket.emit('/door/activities', body)
+//         }
+//     });
+// })
 
-server.app.io = io 
+// server.app.io = io 
 
 const handler = function (request, h) {
 
@@ -54,6 +61,11 @@ const handler = function (request, h) {
 server.route({ method: '*', path: '/{p*}', handler });
 
 server.route([
+    {
+        method: 'OPTIONS',
+        path: '/activities',
+        handler: handlers.default.getActivities
+    },
     {
         method: 'GET',
         path: '/activities',
