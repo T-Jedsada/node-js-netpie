@@ -37,8 +37,9 @@ class Handler {
             return ActivityModel.find({
                     serialNumber
                 })
-                .skip(parseInt(page))
-                .limit(parseInt(size))
+                .sort('-timestamp')
+                .skip(parseInt(page || 0))
+                .limit(parseInt(size || 5))
                 .exec().then(data => {
                     return data
                 }).catch(err => {

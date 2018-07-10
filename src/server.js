@@ -13,6 +13,17 @@ const server = Hapi.server({
     routes: {
         cors: {
             origin: ['*'],
+            // additionalHeaders: [
+            //     'Access-Control-Request-Headers',
+            //     'Access-Control-Request-Methods',
+            //     'cache-control', 
+            //     'x-requested-with',
+            //     'Access-Control-Allow-Methods'
+            // ],
+            // additionalExposedHeaders: [
+            //     'Access-Control-Request-Headers',
+            //     'Access-Control-Request-Method'
+            // ]
         }
     }
 })
@@ -21,8 +32,6 @@ const server = Hapi.server({
 const io = socketio.listen(server.listener)
 io.on('connection', (socket) => {
     console.log('socket connected ... ')
-
-    // TEST SOCKET ////////
     socket.emit('hello', {
         say: 'hello'
     })
@@ -32,7 +41,6 @@ io.on('connection', (socket) => {
             say: 'WTF!!'
         })
     })
-    //////////////////////
 
     netpie.on('message', function (topic, body) {
         console.log('incoming topic: ' + topic + '\tmessage: ' + body);
@@ -45,11 +53,12 @@ io.on('connection', (socket) => {
 
 server.app.io = io 
 
-const handlerPageNotFound = function (request, h) {
+
+// page not found handle
+const handler = function (request, h) {
     return h.response('The page was not found').code(404);
 };
-
-server.route({ method: '*', path: '/{p*}', handlerPageNotFound });
+server.route({ method: '*', path: '/{p*}', handler });
 
 server.route([
     {
