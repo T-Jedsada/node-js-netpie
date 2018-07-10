@@ -1,3 +1,5 @@
+'use strict'
+
 const Hapi = require('hapi')
 require('./database')
 const handlers = require('./handlers')
@@ -8,14 +10,13 @@ const netpie = require('./netpie')
 const server = Hapi.server({
     port: process.env.PORT || 8000,
     host: '0.0.0.0',
-    // routes: {
-    //     cors: true
-    // }
     routes: {
         cors: {
             origin: ['*'],
-            // headers: ["Accept", "Content-Type","Origin","Access-Control-Request-Method","Access-Control-Request-Headers"],
-            additionalHeaders: ['cache-control',"x-requested-with","Origin"]
+            additionalHeaders: [
+                'Access-Control-Request-Headers',
+                'Access-Control-Request-Method'
+            ]
         }
     }
 })
@@ -45,12 +46,14 @@ io.on('connection', (socket) => {
 
 server.app.io = io 
 
+const handler = function (request, h) {
+
+    return h.response('The page was not found').code(404);
+};
+
+server.route({ method: '*', path: '/{p*}', handler });
+
 server.route([
-    // {
-    //     method: 'OPTIONS',
-    //     path: '/activities',
-    //     handler: handlers.default.getActivities
-    // },
     {
         method: 'GET',
         path: '/activities',
@@ -100,6 +103,17 @@ async function start() {
                 return h.view('index')
             }
         })
+        await server.inject({method: '*', url:'/activities', headers: {
+            origin: '*',
+            'access-control-request-method': 'GET',
+            'access-control-request-headers': ''
+        }}, (res) => {
+        
+            console.log(res.headers);
+            console.log(res.payload);
+            console.log(res.statusCode);
+        });
+        
         await server.start()
     } catch (err) {
         console.log(err)
