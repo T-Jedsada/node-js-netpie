@@ -8,64 +8,50 @@ const netpie = require('./netpie')
 
 
 const server = Hapi.server({
-    port: process.env.PORT || 8000,
+    port: process.env.PORT || 8080,
     host: '0.0.0.0',
     routes: {
         cors: {
             origin: ['*'],
-            additionalHeaders: [
-                'Access-Control-Request-Headers',
-                'Access-Control-Request-Methods',
-                'cache-control', 
-                'x-requested-with',
-                'Access-Control-Allow-Methods'
-            ],
-            additionalExposedHeaders: [
-                'Access-Control-Request-Headers',
-                'Access-Control-Request-Method'
-            ]
         }
     }
 })
 
 
-// const io = socketio.listen(server.listener)
-// io.on('connection', (socket) => {
-//     console.log('socket connected ... ')
-//     socket.emit('hello', {
-//         say: 'hello'
-//     })
+const io = socketio.listen(server.listener)
+io.on('connection', (socket) => {
+    console.log('socket connected ... ')
 
-//     socket.on("sayback", (data) => {
-//         socket.emit('hello-again', {
-//             say: 'WTF!!'
-//         })
-//     })
+    // TEST SOCKET ////////
+    socket.emit('hello', {
+        say: 'hello'
+    })
 
-//     netpie.on('message', function (topic, body) {
-//         console.log('incoming topic: ' + topic + '\tmessage: ' + body);
-//         if (topic == '/ihere/door/status') {
-//             // TODO : handler command
-//             socket.emit('/door/activities', body)
-//         }
-//     });
-// })
+    socket.on("sayback", (data) => {
+        socket.emit('hello-again', {
+            say: 'WTF!!'
+        })
+    })
+    //////////////////////
 
-// server.app.io = io 
+    netpie.on('message', function (topic, body) {
+        console.log('incoming topic: ' + topic + '\tmessage: ' + body);
+        if (topic == '/ihere/door/status') {
+            // TODO : handler command
+            socket.emit('/door/activities', body)
+        }
+    });
+})
 
-const handler = function (request, h) {
+server.app.io = io 
 
+const handlerPageNotFound = function (request, h) {
     return h.response('The page was not found').code(404);
 };
 
-server.route({ method: '*', path: '/{p*}', handler });
+server.route({ method: '*', path: '/{p*}', handlerPageNotFound });
 
 server.route([
-    {
-        method: 'OPTIONS',
-        path: '/activities',
-        handler: handlers.default.getActivities
-    },
     {
         method: 'GET',
         path: '/activities',
@@ -115,16 +101,6 @@ async function start() {
                 return h.view('index')
             }
         })
-        await server.inject({method: '*', url:'/activities', headers: {
-            origin: '*',
-            'access-control-request-method': 'GET',
-            'access-control-request-headers': ''
-        }}, (res) => {
-        
-            console.log(res.headers);
-            console.log(res.payload);
-            console.log(res.statusCode);
-        });
         
         await server.start()
     } catch (err) {

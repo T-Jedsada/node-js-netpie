@@ -29,11 +29,22 @@ class Handler {
         }
 
         this.getActivities = (request, h) => {
-            return ActivityModel.find({}).then(data => {
-                return data
-            }).catch(_ => {
-                Boom.badImplementation('something went wrong while query activitie .')
-            })
+            const {
+                serialNumber,
+                page,
+                size
+            } = request.query
+            return ActivityModel.find({
+                    serialNumber
+                })
+                .skip(parseInt(page))
+                .limit(parseInt(size))
+                .exec().then(data => {
+                    return data
+                }).catch(err => {
+                    console.log(err)
+                    return Boom.badImplementation('something went wrong while query activitie .')
+                })
         }
     }
 }
