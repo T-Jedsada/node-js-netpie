@@ -1,3 +1,5 @@
+'use strict'
+
 const Hapi = require('hapi')
 require('./database')
 const handlers = require('./handlers')
@@ -6,10 +8,23 @@ const netpie = require('./netpie')
 
 
 const server = Hapi.server({
-    port: process.env.PORT || 8000,
+    port: process.env.PORT || 8080,
     host: '0.0.0.0',
     routes: {
-        cors: true
+        cors: {
+            origin: ['*'],
+            // additionalHeaders: [
+            //     'Access-Control-Request-Headers',
+            //     'Access-Control-Request-Methods',
+            //     'cache-control', 
+            //     'x-requested-with',
+            //     'Access-Control-Allow-Methods'
+            // ],
+            // additionalExposedHeaders: [
+            //     'Access-Control-Request-Headers',
+            //     'Access-Control-Request-Method'
+            // ]
+        }
     }
 })
 
@@ -38,7 +53,15 @@ io.on('connection', (socket) => {
 
 server.app.io = io 
 
-server.route([{
+
+// page not found handle
+const handler = function (request, h) {
+    return h.response('The page was not found').code(404);
+};
+server.route({ method: '*', path: '/{p*}', handler });
+
+server.route([
+    {
         method: 'GET',
         path: '/activities',
         handler: handlers.default.getActivities
@@ -87,6 +110,7 @@ async function start() {
                 return h.view('index')
             }
         })
+        
         await server.start()
     } catch (err) {
         console.log(err)
