@@ -5,7 +5,8 @@ const ActivitySchema = new Schema({
     urlImage: String,
     timestamp: String,
     action: String,
-    serialNumber: String
+    serialNumber: String,
+    token: String
 })
 
 module.exports = Mongoose.model('activities', ActivitySchema)

@@ -18,6 +18,7 @@ class Handler {
             activity.timestamp = request.payload.timestamp
             activity.urlImage = request.payload.urlImage
             activity.serialNumber = request.payload.serialNumber
+            activity.token = request.payload.token
             return activity.save().then(data => {
                 request.server.app.io.sockets.emit(`${activity.serialNumber}/new/activity`, data)
                 return {
