@@ -31,21 +31,29 @@ class Handler {
         this.getActivities = (request, h) => {
             const {
                 serialNumber,
-                page,
+                offset,
                 size
             } = request.query
-            return ActivityModel.find({
+            const activities = ActivityModel.find({
                     serialNumber
                 })
                 .sort('-timestamp')
-                .skip(parseInt(page || 0))
+                .skip(parseInt(offset || 0))
                 .limit(parseInt(size || 5))
-                .exec().then(data => {
-                    return data
-                }).catch(err => {
-                    console.log(err)
-                    return Boom.badImplementation('something went wrong while query activitie .')
-                })
+                .exec()
+            const totalActivity = ActivityModel.countDocuments({
+                serialNumber
+            }).exec()
+            return Promise.all([activities, totalActivity]).then(([data, total]) => {
+                return {
+                    data,
+                    total
+                }
+            }).catch(err => {
+                console.log(err)
+                return Boom.badImplementation('something went wrong while query activitie .')
+            })
+
         }
     }
 }
