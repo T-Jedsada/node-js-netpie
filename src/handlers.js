@@ -1,5 +1,6 @@
 const Boom = require('boom')
 const ActivityModel = require('./model/activity-model')
+const serialNumberModel = require('./model/serialnumber-model')
 const netpie = require('./netpie')
 // const {io} = require('./socketio')
 
@@ -55,6 +56,29 @@ class Handler {
                 return Boom.badImplementation('something went wrong while query activitie .')
             })
 
+        }
+
+        this.verifySerialNumber = (request, h) => {
+            const {
+                serial_number
+            } = request.payload
+
+            if (!serial_number) {
+                return Boom.badRequest("serial_number is required .")
+            }
+
+            return serialNumberModel.countDocuments({
+                serialNumber: serial_number
+            }).exec().then(result => {
+                if (result) {
+                    return {
+                        message: 'serial number is verified .'
+                    }
+                }
+                return Boom.unauthorized('serial number is invalid .')
+            }).catch(_ => {
+                return Boom.badImplementation('something went wrong while verify serial number .')
+            })
         }
     }
 }
