@@ -13,17 +13,6 @@ const server = Hapi.server({
     routes: {
         cors: {
             origin: ['*'],
-            // additionalHeaders: [
-            //     'Access-Control-Request-Headers',
-            //     'Access-Control-Request-Methods',
-            //     'cache-control', 
-            //     'x-requested-with',
-            //     'Access-Control-Allow-Methods'
-            // ],
-            // additionalExposedHeaders: [
-            //     'Access-Control-Request-Headers',
-            //     'Access-Control-Request-Method'
-            // ]
         }
     }
 })
@@ -72,6 +61,12 @@ server.route([
         handler: handlers.default.saveActivity
     },
 ])
+
+server.route([{
+    method: 'POST',
+    path: '/verify/serialnumber',
+    handler: handlers.default.verifySerialNumber
+}])
 
 server.route([{
     method: 'POST',
