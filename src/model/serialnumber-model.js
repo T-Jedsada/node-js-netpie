@@ -5,7 +5,7 @@ const SerialNumberSchema = new Schema({
     serialNumber: {
         type: String,
         index: true,
-        maxlength: 20,
+        maxlength: 16,
         trim: true
     },
     timestamp: String,
