@@ -80,6 +80,29 @@ class Handler {
                 return Boom.badImplementation('something went wrong while verify serial number .')
             })
         }
+
+        this.setConfigDetection = (request, h) => {
+            const { is_detection } = request.payload
+            if(!is_detection) {
+                return Boom.badRequest('is_detection key is required .')
+            }
+            netpie.publish("/config/detect_face", is_detection.toString(), true)
+            return {
+                message: "successfully"
+            }
+        }
+
+
+        this.setConfigVerifyMobile = (request, h) => {
+            const { is_verify_mobile } = request.payload
+            if(!is_verify_mobile) {
+                return Boom.badRequest('is_verify_mobile key is required .')
+            }
+            netpie.publish("/config/verify_mobile", is_verify_mobile.toString(), true)
+            return {
+                message: "successfully"
+            }
+        }
     }
 }
 

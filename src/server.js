@@ -74,6 +74,19 @@ server.route([{
     handler: handlers.default.doorCommandPostHandler
 }])
 
+server.route([
+    {
+        method: 'POST',
+        path: '/config/detection',
+        handler: handlers.default.setConfigDetection
+    },
+    {
+        method: 'POST',
+        path: '/config/verifymobile',
+        handler: handlers.default.setConfigVerifyMobile
+    }
+])
+
 server.route({
     method: 'GET',
     path: '/',
