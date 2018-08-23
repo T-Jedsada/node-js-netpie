@@ -82,11 +82,11 @@ class Handler {
         }
 
         this.setConfigDetection = (request, h) => {
-            const { is_detection } = request.payload
-            if(!is_detection) {
-                return Boom.badRequest('is_detection key is required .')
+            const { is_detect } = request.payload
+            if(!is_detect) {
+                return Boom.badRequest('is_detect key is required .')
             }
-            netpie.publish("/config/detect_face", is_detection.toString(), true)
+            netpie.publish("/config/detect_face", is_detect.toString(), true)
             return {
                 message: "successfully"
             }
