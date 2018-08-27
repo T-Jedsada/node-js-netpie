@@ -87,6 +87,14 @@ server.route([
     }
 ])
 
+server.route([
+    {
+        method: 'get',
+        path: '/token',
+        handler: handlers.default.getToken
+    }
+])
+
 server.route({
     method: 'GET',
     path: '/',
