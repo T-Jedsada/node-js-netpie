@@ -103,6 +103,26 @@ class Handler {
                 message: "successfully"
             }
         }
+
+        this.getToken = (request, h) => {
+            const agreegate = [
+                {
+                    $group: {
+                        _id: '$token',
+                        count: { $sum: 1 }
+                    }
+                }
+            ]
+
+            return ActivityModel
+                .aggregate(agreegate)
+                .exec()
+                .then(tokens => tokens.map(token => ({ token: token._id, count: token.count})))
+                .catch(err => {
+                    console.log(err)
+                    return Boom.badImplementation('something went wrong . ')
+                })
+        }
     }
 }
 
